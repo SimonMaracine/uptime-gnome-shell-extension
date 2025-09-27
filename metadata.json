@@ -1,0 +1,8 @@
+{
+    "name": "Uptime",
+    "description": "Display the system uptime",
+    "uuid": "uptime@simonmara.dev.com",
+    "shell-version": [
+        "48"
+    ]
+}
