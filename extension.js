@@ -72,11 +72,11 @@ const Uptime = GObject.registerClass(
             const days = Math.floor(time_seconds / (60.0 * 60.0 * 24.0));
 
             if (days > 0) {
-                return `${days} ${_("days")}`;
+                return days === 1 ? `${days} ${_("day")}` : `${days} ${_("days")}`;
             } else if (hours > 0) {
-                return `${hours} ${_("hours")}`;
+                return hours === 1 ? `${hours} ${_("hour")}` : `${hours} ${_("hours")}`;
             } else {
-                return `${minutes} ${_("minutes")}`;
+                return minutes === 1 ? `${minutes} ${_("minute")}` : `${minutes} ${_("minutes")}`;
             }
         }
 
@@ -85,7 +85,11 @@ const Uptime = GObject.registerClass(
             const [hours_quot, hours_rem] = Uptime._divmod(days_rem, 60.0 * 60.0);
             const [minutes_quot, minutes_rem] = Uptime._divmod(hours_rem, 60.0);
 
-            return `${days_quot} ${_("days")} ${hours_quot} ${_("hours")} ${minutes_quot} ${_("minutes")}`;
+            const days = days_quot === 1 ? `${days_quot} ${_("day")}` : `${days_quot} ${_("days")}`;
+            const hours = hours_quot === 1 ? `${hours_quot} ${_("hour")}` : `${hours_quot} ${_("hours")}`;
+            const minutes = minutes_quot === 1 ? `${minutes_quot} ${_("minute")}` : `${minutes_quot} ${_("minutes")}`;
+
+            return `${days} ${hours} ${minutes}`;
         }
 
         static _divmod(y, x) {
