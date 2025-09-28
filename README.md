@@ -1,1 +1,1 @@
-# gnome-uptime-shell-extension
+# uptime-gnome-shell-extension

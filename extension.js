@@ -10,12 +10,12 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-const INTERVAL_SET_TEXT = 1000 * 60;
+const INTERVAL_SET_TEXT = 1000 * (60 - 1);
 
 const Uptime = GObject.registerClass(
     class Uptime extends PanelMenu.Button {
         _init() {
-            super._init(0.0, "Uptime", false);
+            super._init(0.5, "uptime", false);
 
             this._timer_source = null;
             this._time_seconds = Uptime._retrieve_time();
@@ -50,7 +50,7 @@ const Uptime = GObject.registerClass(
             const file = Gio.File.new_for_path("/proc/uptime");
 
             try {
-                const [ok, contents, etag] = file.load_contents(null);  // TODO
+                const [ok, contents, etag] = file.load_contents(null);
 
                 if (!ok) {
                     console.error("UPTIME: Could not read `/proc/uptime`");
@@ -114,4 +114,4 @@ export default class UptimeExtension extends Extension {
     }
 }
 
-// TODO translations, alignment
+// TODO translations

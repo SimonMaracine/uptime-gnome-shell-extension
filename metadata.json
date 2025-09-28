@@ -4,5 +4,7 @@
     "uuid": "uptime@simonmara.dev.com",
     "shell-version": [
         "48"
-    ]
+    ],
+    "url": "https://github.com/SimonMaracine/uptime-gnome-shell-extension",
+    "gettext-domain": "uptime@simonmara.dev.com"
 }
