@@ -2,6 +2,7 @@ import GObject from 'gi://GObject';
 import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import Gio from 'gi://Gio';
+import GLib from 'gi://GLib';
 
 const ByteArray = imports.byteArray;
 
@@ -10,40 +11,42 @@ import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 
-const INTERVAL_SET_TEXT = 1000 * (60 - 1);
+const INTERVAL_SET_TEXT = 60 / 2;
 
 const Uptime = GObject.registerClass(
     class Uptime extends PanelMenu.Button {
         _init() {
             super._init(0.5, "uptime", false);
 
-            this._timer_source = null;
+            this._timer_source_id = null;
             this._time_seconds = Uptime._retrieve_time();
             this._label = new St.Label({
                 text: Uptime._create_text(this._time_seconds),
                 y_align: Clutter.ActorAlign.CENTER,
             });
-            this._item = new PopupMenu.PopupMenuItem(Uptime._create_text_detailed(this._time_seconds));
+            this._item_detailed = new PopupMenu.PopupMenuItem(Uptime._create_text_detailed(this._time_seconds));
 
             this.add_child(this._label);
-            this.menu.addMenuItem(this._item);
+            this.menu.addMenuItem(this._item_detailed);
+
+            // This should prevent some flicker
+            this._label.set_text(Uptime._create_text(this._time_seconds));
+            this._item_detailed.label_actor.set_text(Uptime._create_text_detailed(this._time_seconds));
         }
 
         start_timer() {
-            this._timer_source = setInterval(Uptime._set_text_timer, INTERVAL_SET_TEXT, this);
+            this._timer_source_id = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, INTERVAL_SET_TEXT, () => {
+                this._time_seconds = Uptime._retrieve_time();
+                this._label.set_text(Uptime._create_text(this._time_seconds));
+                this._item_detailed.label_actor.set_text(Uptime._create_text_detailed(this._time_seconds));
+
+                return GLib.SOURCE_CONTINUE;
+            });
         }
 
         stop_timer() {
-            clearInterval(this._timer_source);
-            this._timer_source = null;
-            console.debug("UPTIME: Stopped timer");
-        }
-
-        static _set_text_timer(instance) {
-            instance._time_seconds = Uptime._retrieve_time();
-            instance._label.set_text(Uptime._create_text(instance._time_seconds));
-            instance._item.label_actor.set_text(Uptime._create_text_detailed(instance._time_seconds));
-            console.debug(`UPTIME: Time seconds: ${instance._time_seconds}`);
+            GLib.source_remove(this._timer_source_id);
+            this._timer_source_id = null;
         }
 
         static _retrieve_time() {
