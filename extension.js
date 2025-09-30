@@ -45,7 +45,7 @@ const Uptime = GObject.registerClass(
         }
 
         stop_timer() {
-            GLib.source_remove(this._timer_source_id);
+            GLib.Source.remove(this._timer_source_id);
             this._timer_source_id = null;
         }
 
