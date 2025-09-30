@@ -120,4 +120,3 @@ export default class UptimeExtension extends Extension {
         this._indicator = null;
     }
 }
-
