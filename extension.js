@@ -4,8 +4,6 @@ import St from 'gi://St';
 import Gio from 'gi://Gio';
 import GLib from 'gi://GLib';
 
-const ByteArray = imports.byteArray;
-
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
@@ -60,9 +58,10 @@ const Uptime = GObject.registerClass(
                     return 0.0;
                 }
 
-                const stringContents = ByteArray.toString(contents);
+                const decoder = new TextDecoder("utf-8");
+                const contentsString = decoder.decode(contents);
 
-                return stringContents.split(" ")[0];
+                return contentsString.split(" ")[0];
             } catch (e) {
                 console.error(`UPTIME: Could not load file contents: ${e}`);
                 return 0.0;
