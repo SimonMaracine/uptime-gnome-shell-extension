@@ -121,4 +121,3 @@ export default class UptimeExtension extends Extension {
     }
 }
 
-// TODO translations
