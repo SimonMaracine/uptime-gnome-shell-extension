@@ -16,7 +16,7 @@ const Uptime = GObject.registerClass(
         _init() {
             super._init(0.5, "uptime", false);
 
-            this._time_seconds = Uptime._retrieve_time();
+            this._time_seconds = 0.0;
             this._label_time = new St.Label({
                 text: Uptime._create_text(this._time_seconds),
                 y_align: Clutter.ActorAlign.CENTER,
@@ -30,10 +30,14 @@ const Uptime = GObject.registerClass(
             this._label_time.set_text(Uptime._create_text(this._time_seconds));
             this._item_time_detailed.label_actor.set_text(Uptime._create_text_detailed(this._time_seconds));
 
+            // Update now and every so often
+            this.update_time().catch((e) => {
+                console.error(`UPTIME: Unexpected error: ${e}`);
+            });
             this._timer_source_id = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, INTERVAL_SET_TEXT, () => {
-                this._time_seconds = Uptime._retrieve_time();
-                this._label_time.set_text(Uptime._create_text(this._time_seconds));
-                this._item_time_detailed.label_actor.set_text(Uptime._create_text_detailed(this._time_seconds));
+                this.update_time().catch((e) => {
+                    console.error(`UPTIME: Unexpected error: ${e}`);
+                });
 
                 return GLib.SOURCE_CONTINUE;
             });
@@ -44,6 +48,12 @@ const Uptime = GObject.registerClass(
             this._timer_source_id = null;
 
             super.destroy();
+        }
+
+        async update_time() {
+            this._time_seconds = await Uptime._retrieve_time();
+            this._label_time.set_text(Uptime._create_text(this._time_seconds));
+            this._item_time_detailed.label_actor.set_text(Uptime._create_text_detailed(this._time_seconds));
         }
 
         static async _retrieve_time() {
