@@ -112,12 +112,12 @@ const Uptime = GObject.registerClass(
 
 export default class UptimeExtension extends Extension {
     enable() {
-        this._indicator = new Uptime();
-        Main.panel.addToStatusArea(this.uuid, this._indicator);
+        this._uptime = new Uptime();
+        Main.panel.addToStatusArea(this.uuid, this._uptime);
     }
 
     disable() {
-        this._indicator.destroy();
-        this._indicator = null;
+        this._uptime.destroy();
+        this._uptime = null;
     }
 }

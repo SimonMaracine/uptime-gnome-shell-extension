@@ -1,10 +1,10 @@
 {
     "name": "Clean Uptime",
     "description": "Display the system uptime in a nice human readable format",
-    "uuid": "uptime@simonmara.dev.com",
+    "uuid": "uptime@simonmara.dev",
     "shell-version": [
         "48"
     ],
     "url": "https://github.com/SimonMaracine/uptime-gnome-shell-extension",
-    "gettext-domain": "uptime@simonmara.dev.com"
+    "gettext-domain": "uptime@simonmara.dev"
 }
