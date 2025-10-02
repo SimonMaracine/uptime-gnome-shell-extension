@@ -1,6 +1,6 @@
 {
-    "name": "Uptime",
-    "description": "Display the system uptime",
+    "name": "Clean Uptime",
+    "description": "Display the system uptime in a nice human readable format",
     "uuid": "uptime@simonmara.dev.com",
     "shell-version": [
         "48"

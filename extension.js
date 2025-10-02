@@ -16,7 +16,6 @@ const Uptime = GObject.registerClass(
         _init() {
             super._init(0.5, "uptime", false);
 
-            this._timer_source_id = null;
             this._time_seconds = Uptime._retrieve_time();
             this._label_time = new St.Label({
                 text: Uptime._create_text(this._time_seconds),
@@ -30,9 +29,7 @@ const Uptime = GObject.registerClass(
             // This should prevent some flicker
             this._label_time.set_text(Uptime._create_text(this._time_seconds));
             this._item_time_detailed.label_actor.set_text(Uptime._create_text_detailed(this._time_seconds));
-        }
 
-        start_timer() {
             this._timer_source_id = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, INTERVAL_SET_TEXT, () => {
                 this._time_seconds = Uptime._retrieve_time();
                 this._label_time.set_text(Uptime._create_text(this._time_seconds));
@@ -42,21 +39,18 @@ const Uptime = GObject.registerClass(
             });
         }
 
-        stop_timer() {
+        destroy() {
             GLib.Source.remove(this._timer_source_id);
             this._timer_source_id = null;
+
+            super.destroy();
         }
 
-        static _retrieve_time() {
+        static async _retrieve_time() {
             const file = Gio.File.new_for_path("/proc/uptime");
 
             try {
-                const [ok, contents, etag] = file.load_contents(null);  // Memory read shouldn't need to be asynchronous
-
-                if (!ok) {
-                    console.error("UPTIME: Could not load file contents: `/proc/uptime`");
-                    return 0.0;
-                }
+                const [contents, etag] = await file.load_contents_async(null);
 
                 const decoder = new TextDecoder("utf-8");
                 const contentsString = decoder.decode(contents);
@@ -109,12 +103,10 @@ const Uptime = GObject.registerClass(
 export default class UptimeExtension extends Extension {
     enable() {
         this._indicator = new Uptime();
-        this._indicator.start_timer();
         Main.panel.addToStatusArea(this.uuid, this._indicator);
     }
 
     disable() {
-        this._indicator.stop_timer();
         this._indicator.destroy();
         this._indicator = null;
     }
