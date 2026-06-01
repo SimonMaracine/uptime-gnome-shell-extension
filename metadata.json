@@ -3,7 +3,8 @@
     "description": "Display the system uptime in a nice human readable format",
     "uuid": "uptime@simonmara.dev",
     "shell-version": [
-	    "49",
+        "50",
+        "49",
         "48"
     ],
     "url": "https://github.com/SimonMaracine/uptime-gnome-shell-extension",
